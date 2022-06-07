@@ -4,15 +4,18 @@ namespace App\Models;
 
 use App\Services\Model;
 
-class User extends Model
+class Post extends Model
 {
-    public string $first_name = '';
-    public string $last_name = '';
-    public string $username = '';
+    public string $user_id = '';
+    public string $title = '';
+    public string $description = '';
 
-    public static function tableName(): string
+    public static function tableName(): array
     {
-        return "users";
+        return [
+            "table_name" => "posts", 
+            "foriegn_key" => "user_id"
+        ];
     }
 
     public function attributes(): array

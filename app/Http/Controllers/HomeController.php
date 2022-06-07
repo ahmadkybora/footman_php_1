@@ -2,31 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Services\App;
+use App\Models\Post;
+use App\FOOTMAN\Service\Models\User;
+use App\FOOTMAN\Service\Services\App;
+use App\FOOTMAN\Services\Controller;
 
-class HomeController
+class HomeController extends Controller
 {
     public function index()
     {
-        $user = User::create([
-            'first_name' => 'ghasem',
-            'last_name' => 'montazeri',
-            'username' => 'kks'
-        ]);
+        // $user = User::create([
+        //     'first_name' => 'ghasem',
+        //     'last_name' => 'montazeri',
+        //     'username' => 'kks'
+        // ]);
 
-        // $user = User::all();
+        $post = Post::with('users');
         // $user = User::findById(68);
         // $user->update(68);
         // $user = User::delete(67);
-        dd($user);
+        return json($post);
 
-        $user = new User();
-        $user->last_name = "montazeri";
-        $user->first_name = "ahmad";
-        $user->username = "kybora";
-        $user->save();
-        dd($user);
+        // $user = new User();
+        // $user->last_name = "montazeri";
+        // $user->first_name = "ahmad";
+        // $user->username = "kybora";
+        // $user->save();
+        // dd($user);
         //dd($user->attributes());
         // $b = 
         // [

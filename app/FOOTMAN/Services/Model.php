@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\FOOTMAN\Services;
 
 abstract class Model
 {
@@ -8,7 +8,7 @@ abstract class Model
      * در متدهای ابسترکت باید بدنه آنها داخل کلاس های فرزند اعمال شود
      * متد زیر نام جدول را میگیرد
      */
-    abstract public static function tableName(): string;
+    abstract public static function tableName(): array;
     abstract public function attributes(): array;
 
     /**
@@ -38,7 +38,7 @@ abstract class Model
         /**
          * فراخوانی جدول
          */
-        $tableName = $this->tableName();
+        $tableName = $this->tableName()["table_name"];
         /**
          * فراخوانی فیلدها
          */
@@ -182,7 +182,7 @@ abstract class Model
      */
     public static function findById($id)
     {
-        $tableName = static::tableName();
+        $tableName = static::tableName()["table_name"];
         $sql = "SELECT * FROM $tableName WHERE id=:id";
         $statement = static::prepare($sql);
         $statement->execute(['id' => $id]);
@@ -194,7 +194,7 @@ abstract class Model
      */
     public static function delete($id)
     {
-        $tableName = static::tableName();
+        $tableName = static::tableName()["table_name"];
         $sql = "DELETE from $tableName WHERE id=:id";
         $statement = static::prepare($sql);
         $statement->execute(['id' => $id]);
@@ -202,8 +202,7 @@ abstract class Model
 
     public function update($id)
     {
-        $tableName = $this->tableName();
-
+        $tableName = $this->tableName()["table_name"];
         $attributes = $this->attributes();
         dd($attributes);
         foreach($attributes as $key => $val) {
@@ -219,7 +218,7 @@ abstract class Model
      */
     public static function all()
     {
-        $tableName = static::tableName();
+        $tableName = static::tableName()["table_name"];
         $sql = "SELECT * FROM $tableName";
         $statement = static::query($sql);
         return $statement->fetchAll();
@@ -231,11 +230,35 @@ abstract class Model
      */
     public static function create(array $data)
     {
-        $tableName = static::tableName();
+        $tableName = static::tableName()["table_name"];
         $sql = "INSERT INTO $tableName (" . implode(",", array_keys($data)) .") VALUES (" . ":" . implode(",:", array_keys($data)) . ")";
         foreach($data as $key => $val) {
             $params [$key] = $val;
         }
         static::prepare($sql)->execute($params);
+    }
+
+    public function where()
+    {
+    }
+
+    public function whereNot()
+    {
+    }
+
+    public function whereIn()
+    {
+    }
+    /**
+     * در اصل یک رابطه را بر میگرداند بوسیله ارسال اسم
+     * جدول مورد نظر
+     */
+    public static function with($relationship)
+    {
+        $tableName = static::tableName()["table_name"];
+        $foriegn_key = static::tableName()["foriegn_key"];
+        $sql = "SELECT * FROM $tableName INNER JOIN $relationship ON $foriegn_key=$relationship.id";
+        $statement = static::query($sql);
+        return $statement->fetchAll();
     }
 } 
